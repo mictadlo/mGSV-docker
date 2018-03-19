@@ -16,4 +16,4 @@ services:
     build: ./mGSV 
     restart: always
     ports:
-      - 8080:8080
+      - 8001:8001
