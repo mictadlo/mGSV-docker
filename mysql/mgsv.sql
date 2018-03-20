@@ -1,6 +1,5 @@
-CREATE DATABASE mgsv;
-CREATE USER 'mgsv_user'@'localhost' IDENTIFIED BY 'mgsvpass';
-GRANT SELECT, INSERT, CREATE, DROP ON mgsv.* TO 'mgsvuser'@'localhost';
+CREATE DATABASE IF NOT EXISTS mgsv;
+CREATE USER IF NOT EXISTS 'mgsv_user'@'localhost' IDENTIFIED BY 'mgsvpass';
 use mgsv;
 CREATE TABLE IF NOT EXISTS `userinfo` (
 	`id` int(10) NOT NULL AUTO_INCREMENT,
