@@ -6,7 +6,7 @@ RUN apt-get update  && apt-get install -y --no-install-recommends \
 		git \
         && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/qunfengdong/mGSV.git
+RUN cd /var/www/html/ && git clone https://github.com/qunfengdong/mGSV.git
 
 # Move the folder 'mgsv' to DocumentRoot of Apache web server. By default, the DocumentRoot of Apache is /var/www/ (speak to the system administrator to know the exact DocumentRoot).
 RUN cd /var/www/html/mGSV \
@@ -45,6 +45,14 @@ RUN cd /var/www/html/mGSV/ws \
     && echo "mgsv_upload_url=http://localhost/mgsv" > config.properties \
     && echo "ws_publish_url=http\://localhost\:8081/MGSVService" >> config.properties \
     && java -jar ws-server-1.0RC1-jar-with-dependencies.jar &
+
+COPY ./index.php /var/www/html/
+#COPY ./yourhost.com.conf  /etc/apache2/sites-available/
+#COPY ./hosts  /etc/hosts
+
+#RUN service apache2 restart
+#WORKDIR /etc/apache2/sites-available/
+#RUN a2ensite yourhost.com.conf 
 
 #To stop the web service
 #shell> ps aux | grep ws-server-1.0RC1-jar-with-dependencies.jar
