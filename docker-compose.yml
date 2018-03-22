@@ -13,7 +13,8 @@ services:
       - ./mysql:/docker-entrypoint-initdb.d
 
   www:
-    build: ./mGSV 
+    build: ./mGSV
+    image: mgsv 
     restart: always
     ports:
-      - 8001:8001
+      - 8080:80
