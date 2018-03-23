@@ -6,6 +6,10 @@ RUN apt-get update  && apt-get install -y --no-install-recommends \
 		git \
         && rm -rf /var/lib/apt/lists/*
 
+RUN docker-php-source extract \
+    && docker-php-ext-install mysql mysqli pdo pdo_mysql \
+    && docker-php-source delete
+
 RUN cd /var/www/html/ && git clone https://github.com/qunfengdong/mGSV.git
 
 # Move the folder 'mgsv' to DocumentRoot of Apache web server. By default, the DocumentRoot of Apache is /var/www/ (speak to the system administrator to know the exact DocumentRoot).
@@ -47,12 +51,7 @@ RUN cd /var/www/html/mGSV/ws \
     && java -jar ws-server-1.0RC1-jar-with-dependencies.jar &
 
 COPY ./index.php /var/www/html/
-#COPY ./yourhost.com.conf  /etc/apache2/sites-available/
-#COPY ./hosts  /etc/hosts
-
-#RUN service apache2 restart
-#WORKDIR /etc/apache2/sites-available/
-#RUN a2ensite yourhost.com.conf 
+RUN a2enmod rewrite
 
 #To stop the web service
 #shell> ps aux | grep ws-server-1.0RC1-jar-with-dependencies.jar
