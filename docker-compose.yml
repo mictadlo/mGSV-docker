@@ -1,20 +1,51 @@
-version: '3.1'
-
-services:
-  db:
-    image: mysql
-    restart: always
-    environment:
-      - MYSQL_DATABASE=mgsv
-      - MYSQL_USER=mgsv_user
-      - MYSQL_PASSWORD=mgsvpass
-      - MYSQL_ROOT_PASSWORD=mysql123
-    volumes:
-      - ./mysql:/docker-entrypoint-initdb.d
-
-  www:
-    build: ./mGSV
-    image: mgsv 
+nginx:
+    image: nginx
     restart: always
     ports:
-      - 8080:80
+        - "80:80"
+    links:
+        - phpfpm
+        - db
+    volumes:
+        #- ./nginx/default:/etc/nginx/sites-available/default
+        #- ./nginx/default:/etc/nginx/sites-enabled/default
+
+        - ./logs/nginx-error.log:/var/log/nginx/error.log
+        - ./logs/nginx-access.log:/var/log/nginx/access.log
+
+        - ./nginx/default:/etc/nginx/conf.d/default.conf
+
+phpfpm:
+    build: php5-fpm
+    restart: always
+    ports:
+        - "9000:9000"
+    links:
+        - db
+    volumes:
+        - ./mGSV/:/usr/share/nginx/html
+
+db:
+  image: mariadb
+  restart: always
+  environment:
+    - MYSQL_ROOT_PASSWORD=admin
+    - MYSQL_DATABASE=mgsv
+    - MYSQL_USER=mgsv_user
+    - MYSQL_PASSWORD=mgsvpass
+  ports:
+    - "3306:3306" 
+  volumes:
+    - ./mysql/:/docker-entrypoint-initdb.d 
+
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  restart: always
+  links:
+    - db
+  ports:
+    - 8183:80
+  environment:
+    PMA_USER: root
+    PMA_PASSWORD: admin
+    PMA_ARBITRARY: 1
