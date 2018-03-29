@@ -13,13 +13,13 @@ if($step==1){
 			<table border="0">
 			  <tr>
 					<td colspan="5">MySQL Server Hostname (i.e., the server where your MySQL is running, e.g., localhost)</td>
-					<td><input type="text" name="dbhost" id="dbhost" value="localhost" size="10"/></td>
+					<td><input type="text" name="dbhost" id="dbhost" value="db" size="10"/></td>
 				</tr>
 				<tr>
 					<td colspan="5">
 						MySQL User Name (i.e., the user name specified in lib/dbtools.php) 
 					</td>
-					<td><input type="text" name="dbuser" id="dbuser" value="mgsvuser"/ size="10"></td>
+					<td><input type="text" name="dbuser" id="dbuser" value="mgsv_user"/ size="10"></td>
 				</tr>
 				<tr>
 					<td colspan="5">MySQL Password (i.e., the password specified in lib/dbtools.php)</td>
@@ -72,20 +72,6 @@ if($step==1){
 				echo "<span style=\"color:green\"> Installed</span>";
 			}
 		?>
-		</td>
-	</tr>
-	<tr>
-		<td>MySQL Installation</td>
-		<td>                             
-			<?php 
-			$retval =  exec('which mysql');
-			if ($retval == ""){
-				$boolean_check++;
-				echo "<span style=\"color:red\"> Not Installed</span>"; 
-			} else {
-				echo "<span style=\"color:green\"> Installed</span>";
-			}
-			?>
 		</td>
 	</tr>
 	</table>

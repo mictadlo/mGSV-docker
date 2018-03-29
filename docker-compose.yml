@@ -1,29 +1,13 @@
-nginx:
-    image: nginx
+
+phpapache:
+    build: php5-apache
     restart: always
     ports:
         - "80:80"
     links:
-        - phpfpm
         - db
     volumes:
-        #- ./nginx/default:/etc/nginx/sites-available/default
-        #- ./nginx/default:/etc/nginx/sites-enabled/default
-
-        - ./logs/nginx-error.log:/var/log/nginx/error.log
-        - ./logs/nginx-access.log:/var/log/nginx/access.log
-
-        - ./nginx/default:/etc/nginx/conf.d/default.conf
-
-phpfpm:
-    build: php5-fpm
-    restart: always
-    ports:
-        - "9000:9000"
-    links:
-        - db
-    volumes:
-        - ./mGSV/:/usr/share/nginx/html
+        - ./mGSV/:/var/www/html
 
 db:
   image: mariadb
