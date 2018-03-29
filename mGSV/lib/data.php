@@ -33,8 +33,9 @@ else if ($data == 'synteny') {
 } 
 else if ($data == 'size'){
 	$query = "select distinct org1,org2 from ".$session_id."_synteny union select distinct org1,org2 from ".$session_id."_synteny ";
-	//echo $query,"<br>";
+	echo $query,"<br>";
 	$result = mysql_query($query);
+        echo $results,"<br>";
 	while($row = mysql_fetch_assoc($result)){
 		#echo $row['org1'], "<br>";
 		$q = "select max(output) as max from (select max(greatest(org1_start, org1_end)) as output from ".$session_id."_synteny where org1 like '" . $row['org1'] . "' union select max(greatest(org2_start, org2_end)) as output from ".$session_id."_synteny where org2 like '" . $row['org1'] . "') as t1";
