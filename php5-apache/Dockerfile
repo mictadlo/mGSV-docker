@@ -1,5 +1,4 @@
-FROM php:5-fpm
-
+FROM php:5-apache
 
 #RUN apt-get update  && apt-get install -y --no-install-recommends \
 #                openjdk-7-jdk \
@@ -14,15 +13,15 @@ RUN docker-php-source extract \
 #RUN cd /var/www/html/ && git clone https://github.com/qunfengdong/mGSV.git
 
 # Move the folder 'mgsv' to DocumentRoot of Apache web server. By default, the DocumentRoot of Apache is /var/www/ (speak to the system administrator to know the exact DocumentRoot).
-#RUN cd /var/www/html/mGSV \
-#    && mkdir tmp \
-#    && chmod -R 777 tmp
+RUN cd /var/www/ && \
+    mkdir -p mgsv/tmp && \
+    chmod -R 777 mgsv/tmp
 
 #RUN cd /var/www/html/mGSV && sed -i.bak "s|'gsv'|'mgsv_user'|" lib/settings.php \ 
 #    && sed -i.bak "s|$database_pass = ''|$database_pass = 'mgsvpass'|" lib/settings.php \
 #    && sed -i.bak "s|cas-qshare.cas.unt.edu|db|" lib/settings.php
 
-#RUN cp /var/www/html/mGSV/Arial.ttf /usr/share/fonts/truetype/
+COPY ./Arial.ttf /usr/share/fonts/truetype/
 
 #Do not understand
 #7. Cleanup scripts are provided to drop database synteny and annotation tables, remove entries from database table 'userinfo' and delete the folder containing image files which are older than 60 days. This task is accomplished by cron job to run the cleanup script every day. To create a cron job, use the command below:
