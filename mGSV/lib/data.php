@@ -11,14 +11,14 @@ $array = array();
 if($data == 'annotation') {
 	$query = "SELECT track_name FROM ".$session_id."_annotation WHERE org_id like '$org' GROUP BY track_name ";
 	$result = mysql_query($query);
-	
+
 	if($result != ''){
 		while($row = mysql_fetch_assoc($result)){
 			array_push($array, $row['track_name']);
 		}
 	}
 	//array_push($syn_array, "10_50_20_70");
-} 
+}
 else if ($data == 'synteny') {
 	$query = "DESC ".$session_id."_synteny";
 	$result = mysql_query($query);
@@ -30,36 +30,44 @@ else if ($data == 'synteny') {
 			array_push($array, $row['Field']);
 		}
 	}
-} 
+}
 else if ($data == 'size'){
-	$query = "select distinct org1,org2 from ".$session_id."_synteny union select distinct org1,org2 from ".$session_id."_synteny ";
+	echo "$session_id.", $session_id, "<br>";
+	echo "$org", $org, "<br>";
+	$query = "select distinct org1,org2 from '.$session_id.'_synteny union select distinct org1,org2 from '.$session_id.'_synteny";
 	echo $query,"<br>";
 	$result = mysql_query($query);
-        echo $results,"<br>";
-	while($row = mysql_fetch_assoc($result)){
-		#echo $row['org1'], "<br>";
-		$q = "select max(output) as max from (select max(greatest(org1_start, org1_end)) as output from ".$session_id."_synteny where org1 like '" . $row['org1'] . "' union select max(greatest(org2_start, org2_end)) as output from ".$session_id."_synteny where org2 like '" . $row['org1'] . "') as t1";
-		#echo $q, "<br>";
-		$res = 	mysql_query($q);
-		if (!$res) {
-    	die('Could not query:' . mysql_error());
+	echo $results,"<br>";
+	if ($results) {
+		while($row = mysql_fetch_assoc($result)){
+			echo $row['org1'], "<br>";
+			$q = "select max(output) as max from (select max(greatest(org1_start, org1_end)) as output from ".$session_id."_synteny where org1 like '" . $row['org1'] . "' union select max(greatest(org2_start, org2_end)) as output from ".$session_id."_synteny where org2 like '" . $row['org1'] . "') as t1";
+			echo $q, "<br>";
+			$res = mysql_query($q);
+			if (!$res) {
+				die('Could not query:' . mysql_error());
+			}
+			echo $row['org1'],"<br>";
+			echo $row['org2'],"<br>";
+			if (! isset($array[$row['org1']])){
+				//echo "add<br>";
+				$array[$row['org1']] = mysql_result($res,0);
+			}
+			$q = "select max(output) as max from (select max(greatest(org1_start, org1_end)) as output from ".$session_id."_synteny where org1 like '" . $row['org2'] . "' union select max(greatest(org2_start, org2_end)) as output from ".$session_id."_synteny where org2 like '" . $row['org2'] . "') as t1";
+			#echo $q, "<br>";
+			$res = mysql_query($q);
+			if (!$res) {
+				die('Could not query:' . mysql_error());
+			}
+			if (! isset($array[$row['org2']])){
+				//echo "add<br>";
+				$array[$row['org2']] = mysql_result($res,0);
+			}
 		}
-		//echo $row['org1'],"<br>";
-		//echo $row['org2'],"<br>";
-		if (! isset($array[$row['org1']])){
-			//echo "add<br>";
-			$array[$row['org1']] = mysql_result($res,0);
-		}
-		$q = "select max(output) as max from (select max(greatest(org1_start, org1_end)) as output from ".$session_id."_synteny where org1 like '" . $row['org2'] . "' union select max(greatest(org2_start, org2_end)) as output from ".$session_id."_synteny where org2 like '" . $row['org2'] . "') as t1";
-		#echo $q, "<br>";
-		$res = 	mysql_query($q);
-		if (!$res) {
-    	die('Could not query:' . mysql_error());
-		}
-		if (! isset($array[$row['org2']])){
-			//echo "add<br>";
-			$array[$row['org2']] = mysql_result($res,0);
-		}		
+	}
+	else {
+		echo 'Invalid query: ' . mysql_error() . "\n";
+		echo 'Whole query: ' . $query;
 	}
 }
 else if ($data == 'order'){
@@ -97,12 +105,12 @@ else if ($data == 'sorder'){
 		$assarr[array_search($row['org2'], $default)][array_search($row['org1'], $default)] = $q_row['sum'];
 		#$assarr[array_search($row['org2'], $default)][array_search($row['org1'], $default)] = 1;
 		#echo array_search($row['org1'], $default) . "][ ". array_search($row['org2'], $default) . '<br>';
-		$assarr[array_search($row['org1'], $default)][array_search($row['org1'], $default)] = 0;		
+		$assarr[array_search($row['org1'], $default)][array_search($row['org1'], $default)] = 0;
 		#echo array_search($row['org1'], $default) . "][ ". array_search($row['org1'], $default) . '<br>';
 		$assarr[array_search($row['org2'], $default)][array_search($row['org2'], $default)] = 0;
 		#echo array_search($row['org2'], $default) . "][ ". array_search($row['org2'], $default) . '<br>';
 	}
-	
+
 	$a = FindOrder($assarr);
 	$sugg = array();
 	//echo sizeof($a),'<br>';
@@ -150,7 +158,7 @@ function longestPath($graph, $cur, $len){
 	}
 	return $path;
 }
-		
+
 function completeCycle($graph, $path){
 	$graph = removePath($graph, $path);
 	$last = $path[sizeof($path)-1];
@@ -162,7 +170,7 @@ function completeCycle($graph, $path){
 	}
 	return $path;
 }
-		
+
 function removePath($graph, $path){
 	for($x = 0; $x < sizeof($path) - 1; $x++){
 		$arr = $path[$x]; //***forgot the $ in front of path***
@@ -172,7 +180,7 @@ function removePath($graph, $path){
 	}
 	return $graph;
 }
-		
+
 function removeVertex($graph, $vtx){
 	if($vtx < 0 || $vtx >= sizeof($graph)){
 		return copy($graph);
@@ -183,7 +191,7 @@ function removeVertex($graph, $vtx){
 	}
 	return $graph;
 }
-		
+
 function numEdges($vtx){
 	$r = 0;
 	foreach($vtx as $x){
@@ -206,7 +214,7 @@ function leastEdges($graph){
 	}
 	return $r;
 }
-		
+
 function isEmpty($arr){
 	$r = true;
 	foreach($arr as $x){

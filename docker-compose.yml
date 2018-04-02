@@ -10,7 +10,7 @@ phpapache:
         - ./mGSV/:/var/www/html
 
 db:
-  image: mariadb
+  image: mysql
   restart: always
   environment:
     - MYSQL_ROOT_PASSWORD=admin

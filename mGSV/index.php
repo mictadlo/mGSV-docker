@@ -161,7 +161,7 @@ function uncompress_files($filename){
 		global $upload_dir, $newsession_id, $email;
 		#echo "($upload_dir)<br>";
 		## Get the first line
-		$header_line = exec( "head -n 1 tmp/".$newsession_id . $filename);
+		$header_line = exec( "head -n 1 mgsv/tmp/".$newsession_id . $filename);
 		if($header_line == ''){
 			$bool_page = 'Synteny file: Unable to store in /tmp folder.';
 			return $bool_page;
@@ -193,7 +193,7 @@ function uncompress_files($filename){
 		}
 		
 		## Check if the number of columns is the same as column headers
-		$second_line = exec( "head -n 2 tmp/" . $newsession_id . $filename . "| tail -n 1");
+		$second_line = exec( "head -n 2 mgsv/tmp/" . $newsession_id . $filename . "| tail -n 1");
 		$second_pieces = explode( "\t", $second_line);
 		if( sizeof($header_pieces) != sizeof($second_pieces)){
 			$bool_page = "Synteny file: There are " . sizeof($header_pieces) . " column names but " . sizeof($second_pieces) . " columns.";
